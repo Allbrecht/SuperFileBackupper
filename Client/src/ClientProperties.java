@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ClientProperties extends Properties {
+public class ClientProperties {
     private static final String pathToClientProperties = "Client/res/client_strings.properties";
     public static Properties INSTANCE = getClientProperty();
 

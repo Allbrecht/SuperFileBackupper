@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ServerProperties extends Properties {
+public class ServerProperties {
     private static final String pathToServerProperties = "Server/res/server_strings.properties";
     public static Properties INSTANCE = getServerProperty();
 
