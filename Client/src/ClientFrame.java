@@ -25,6 +25,15 @@ public class ClientFrame extends JFrame {
 
         ImageIcon icon = new ImageIcon("exit.png");
 
+        JButton OFileButton = new JButton(icon);
+        OFileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                ClientOFileDialog OFileDial=new ClientOFileDialog(this);
+                OFileDial.setVisible(true);
+            }
+        });
+
         JButton exitButton = new JButton(icon);
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
