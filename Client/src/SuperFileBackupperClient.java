@@ -5,10 +5,8 @@ public class SuperFileBackupperClient {
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new ClientFrame("ClientFrame");
-
+                new ClientFrame("Super File Backupper");
             }
-
         });
     }
 }
