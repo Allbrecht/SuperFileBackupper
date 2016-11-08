@@ -16,7 +16,6 @@ public class ClientFrame extends JFrame {
         setSize(300, 200);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(true);
     }
 
     private void createToolBar() {
@@ -27,24 +26,30 @@ public class ClientFrame extends JFrame {
 
         JButton OFileButton = new JButton(icon);
         OFileButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e)
-            {
-                ClientOFileDialog OFileDial=new ClientOFileDialog(this);
-                OFileDial.setVisible(true);
+            public void actionPerformed(ActionEvent e) {
+                OpenFileDialogOpen();
             }
         });
 
         JButton exitButton = new JButton(icon);
         exitButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 closeFrame();
             }
         });
+        toolbar.add(OFileButton);
         toolbar.add(exitButton);
-
         add(toolbar, BorderLayout.NORTH);
     }
+
+
+    private void OpenFileDialogOpen() {
+
+        ClientOFileDialog OFileDial=new ClientOFileDialog(this);
+        OFileDial.setVisible(true);
+    }
+
+
     private void closeFrame(){
         dispose();
     }
