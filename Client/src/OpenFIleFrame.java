@@ -1,6 +1,5 @@
 
-import java.awt.Container;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class OpenFIleFrame extends JFrame {
     private JPanel panel;
-    private JTextArea area;
+    public File file;
 
     public OpenFIleFrame() {
 
@@ -36,22 +35,15 @@ public class OpenFIleFrame extends JFrame {
 
         panel = (JPanel) getContentPane();
 
-        area = new JTextArea();
+        createToolBar();
 
-        JScrollPane spane = new JScrollPane();
-        spane.getViewport().add(area);
-
-        JToolBar toolbar = createToolBar();
-
-        createLayout(toolbar, spane);
-
-        setTitle("JFileChooser");
+        setTitle("Open File");
         setSize(400, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    private JToolBar createToolBar() {
+    private void createToolBar() {
 
         ImageIcon open = new ImageIcon("document-open.png");
 
@@ -62,44 +54,7 @@ public class OpenFIleFrame extends JFrame {
 
         toolbar.add(openb);
 
-        return toolbar;
-    }
-
-    private void createLayout(JComponent... arg) {
-
-        Container pane = getContentPane();
-        GroupLayout gl = new GroupLayout(pane);
-        pane.setLayout(gl);
-
-        gl.setHorizontalGroup(gl.createParallelGroup()
-                .addComponent(arg[0], DEFAULT_SIZE, DEFAULT_SIZE,
-                        Short.MAX_VALUE)
-                .addGroup(gl.createSequentialGroup()
-                        .addComponent(arg[1]))
-        );
-
-        gl.setVerticalGroup(gl.createSequentialGroup()
-                .addComponent(arg[0])
-                .addGap(4)
-                .addComponent(arg[1])
-        );
-
-        pack();
-    }
-
-    public String readFile(File file) {
-
-        String content = "";
-
-        try {
-            content = new String(Files.readAllBytes(Paths.get(
-                    file.getAbsolutePath())));
-        } catch (IOException ex) {
-            Logger.getLogger(OpenFIleFrame.class.getName()).log(
-                    Level.SEVERE, null, ex);
-        }
-
-        return content;
+        add(toolbar, BorderLayout.NORTH);
     }
 
 
@@ -116,9 +71,7 @@ public class OpenFIleFrame extends JFrame {
             int ret = fdia.showDialog(panel, "Open file");
 
             if (ret == JFileChooser.APPROVE_OPTION) {
-                File file = fdia.getSelectedFile();
-                String text = readFile(file);
-                area.setText(text);
+                file = fdia.getSelectedFile();
             }
         }
     }
