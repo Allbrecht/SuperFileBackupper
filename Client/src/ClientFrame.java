@@ -44,7 +44,7 @@ public class ClientFrame extends JFrame {
 
 
     private void OpenFileDialogOpen() {
-        OpenFIleFrame OFile = new OpenFIleFrame("OpenFIleFrame");
+        OpenFIleFrame OFile = new OpenFIleFrame();
         OFile.setVisible(true);
     }
 
