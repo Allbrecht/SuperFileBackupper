@@ -11,19 +11,16 @@ import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
 import static javax.swing.GroupLayout.DEFAULT_SIZE;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JProgressBar;
 
 public class OpenFIleFrame extends JFrame {
     private JPanel panel;
+    private JProgressBar pbar;
 
     public OpenFIleFrame() {
 
@@ -32,10 +29,15 @@ public class OpenFIleFrame extends JFrame {
 
     private void initUI(File file) {
 
-        panel = (JPanel) getContentPane();
+        pbar = new JProgressBar();
+        pbar.setStringPainted(true);
+
+        add(pbar);
+
+        pbar.setValue(50);
 
         setTitle(file.getName());
-        setSize(400, 300);
+        setSize(400, 100);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
