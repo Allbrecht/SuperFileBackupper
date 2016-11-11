@@ -24,55 +24,35 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class OpenFIleFrame extends JFrame {
     private JPanel panel;
-    public File file;
 
     public OpenFIleFrame() {
 
-        initUI();
+        initUI(LoadFile());
     }
 
-    private void initUI() {
+    private void initUI(File file) {
 
         panel = (JPanel) getContentPane();
 
-        createToolBar();
-
-        setTitle("Open File");
+        setTitle(file.getName());
         setSize(400, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    private void createToolBar() {
+    private File LoadFile() {
+        JFileChooser fdia = new JFileChooser();
+        FileFilter filter = new FileNameExtensionFilter("Java files",
+                "java");
+        fdia.addChoosableFileFilter(filter);
 
-        ImageIcon open = new ImageIcon("document-open.png");
+        int ret = fdia.showDialog(panel, "Open file");
 
-        JToolBar toolbar = new JToolBar();
-        JButton openb = new JButton(open);
-
-        openb.addActionListener(new OpenFileAction());
-
-        toolbar.add(openb);
-
-        add(toolbar, BorderLayout.NORTH);
-    }
-
-
-    private class OpenFileAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            JFileChooser fdia = new JFileChooser();
-            FileFilter filter = new FileNameExtensionFilter("Java files",
-                    "java");
-            fdia.addChoosableFileFilter(filter);
-
-            int ret = fdia.showDialog(panel, "Open file");
-
-            if (ret == JFileChooser.APPROVE_OPTION) {
-                file = fdia.getSelectedFile();
-            }
+        if (ret == JFileChooser.APPROVE_OPTION) {
+           File file = fdia.getSelectedFile();
+            return file;
         }
+        return null;
     }
+
 }
