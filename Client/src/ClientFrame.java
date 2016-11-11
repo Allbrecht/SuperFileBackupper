@@ -31,13 +31,22 @@ public class ClientFrame extends JFrame {
             }
         });
 
+        JButton RestoreButton = new JButton(icon);
+        RestoreButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                RestoreFileOpen();
+            }
+        });
+
         JButton exitButton = new JButton(icon);
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 closeFrame();
             }
         });
+
         toolbar.add(OFileButton);
+        toolbar.add(RestoreButton);
         toolbar.add(exitButton);
         add(toolbar, BorderLayout.NORTH);
     }
@@ -47,7 +56,10 @@ public class ClientFrame extends JFrame {
         OpenFIleFrame OFile = new OpenFIleFrame();
         OFile.setVisible(true);
     }
-
+    private void RestoreFileOpen() {
+        RestoreFile RFile = new RestoreFile();
+        RFile.setVisible(true);
+    }
 
     private void closeFrame(){
         dispose();

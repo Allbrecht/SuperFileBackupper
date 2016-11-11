@@ -41,7 +41,7 @@ public class OpenFIleFrame extends JFrame {
         setTitle(file.getName());
         setSize(400, 100);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     private void createLayout(JComponent... arg) {
@@ -66,9 +66,6 @@ public class OpenFIleFrame extends JFrame {
 
     private File LoadFile() {
         JFileChooser fdia = new JFileChooser();
-        FileFilter filter = new FileNameExtensionFilter("Java files",
-                "java");
-        fdia.addChoosableFileFilter(filter);
 
         int ret = fdia.showDialog(panel, "Open file");
 
