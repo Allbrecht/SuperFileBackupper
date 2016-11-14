@@ -13,7 +13,7 @@ public class ClientFrame extends JFrame {
 
         createToolBar();
         setTitle(clientFrame);
-        setSize(300, 200);
+        setSize(450, 200);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
@@ -22,23 +22,25 @@ public class ClientFrame extends JFrame {
 
         JToolBar toolbar = new JToolBar();
 
-        ImageIcon icon = new ImageIcon("exit.png");
+        ImageIcon Exiticon = new ImageIcon("Client\\Icons\\exit.png");
+        ImageIcon Downloadicon = new ImageIcon("Client\\Icons\\download.png");
+        ImageIcon Uploadicon = new ImageIcon("Client\\Icons\\upload.png");
 
-        JButton OFileButton = new JButton(icon);
+        JButton OFileButton = new JButton(Downloadicon);
         OFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 OpenFileDialogOpen();
             }
         });
 
-        JButton RestoreButton = new JButton(icon);
+        JButton RestoreButton = new JButton(Uploadicon);
         RestoreButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RestoreFileOpen();
             }
         });
 
-        JButton exitButton = new JButton(icon);
+        JButton exitButton = new JButton(Exiticon);
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 closeFrame();
