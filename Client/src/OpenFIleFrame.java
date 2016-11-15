@@ -1,32 +1,24 @@
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
-import static javax.swing.GroupLayout.DEFAULT_SIZE;
-import javax.swing.ImageIcon;
+
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JProgressBar;
+
 import static javax.swing.GroupLayout.Alignment.CENTER;
 
 public class OpenFIleFrame extends JFrame {
     private JPanel panel;
     private JProgressBar pbar;
+    private File fileToBuckup;
 
     public OpenFIleFrame() {
 
-        initUI(LoadFile());
+        loadFile();
     }
 
     private void initUI(File file) {
@@ -64,16 +56,16 @@ public class OpenFIleFrame extends JFrame {
         pack();
     }
 
-    private File LoadFile() {
+    private void loadFile() {
         JFileChooser fdia = new JFileChooser();
 
         int ret = fdia.showDialog(panel, "Open file");
 
         if (ret == JFileChooser.APPROVE_OPTION) {
-           File file = fdia.getSelectedFile();
-            return file;
+             fileToBuckup = fdia.getSelectedFile();
+            initUI(fileToBuckup);
         }
-        return null;
+
     }
 
 }
