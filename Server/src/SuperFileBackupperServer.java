@@ -1,52 +1,48 @@
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SuperFileBackupperServer {
-    public static void main(String args[]) {
-        ServerSocket serverSocket = null;
+public class SuperFileBackupperServer extends  Thread{
+    private ServerSocket ss;
 
+    public SuperFileBackupperServer(int port) {
         try {
-            serverSocket = new ServerSocket(4444);
-        } catch (IOException ex) {
-            System.out.println("Can't setup server on this port number. ");
-        }
-
-        Socket socket = null;
-        InputStream in = null;
-        OutputStream out = null;
-
-        try {
-            socket = serverSocket.accept();
-        } catch (IOException ex) {
-            System.out.println("Can't accept client connection. ");
-        }
-
-        try {
-            in = socket.getInputStream();
-        } catch (IOException ex) {
-            System.out.println("Can't get socket input stream. ");
-        }
-
-        try {
-            out = new FileOutputStream("M:\\test2.xml");
-        } catch (FileNotFoundException ex) {
-            System.out.println("File not found. ");
-        }
-
-        byte[] bytes = new byte[16*1024];
-
-        int count;
-        try {
-            while ((count = in.read(bytes)) > 0) {
-                out.write(bytes, 0, count);
-            }
-            out.close();
-            in.close();
-            socket.close();
-            serverSocket.close();
+            ss = new ServerSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    public void run() {
+        while (true) {
+            try {
+                Socket clientSock = ss.accept();
+                saveFile(clientSock);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveFile(Socket clientSock) throws IOException {
+        DataInputStream dis = new DataInputStream(clientSock.getInputStream());
+        FileOutputStream fos = new FileOutputStream("testfile");
+        byte[] buffer = new byte[4096];
+
+        int bytesRead = 0;
+        while((bytesRead = dis.read(buffer)) > 0) {
+            fos.write(buffer, 0, bytesRead);
+        }
+
+        fos.close();
+        dis.close();
+    }
+
+    public static void main(String[] args) {
+        SuperFileBackupperServer fs = new SuperFileBackupperServer(Integer.parseInt(ServerProperties.INSTANCE.getProperty("port")));
+        fs.start();
+    }
+
 }

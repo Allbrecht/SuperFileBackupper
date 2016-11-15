@@ -5,7 +5,7 @@ public class SuperFileBackupperClient {
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                ClientFrame mainWindow =new ClientFrame("Super File Backupper");
+                ClientFrame mainWindow = new ClientFrame("Super File Backupper");
                 mainWindow.setVisible(true);
             }
         });

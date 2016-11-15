@@ -7,28 +7,24 @@ public class Connection {
     public Connection(File fileToSend) {
         try {
             socket = new Socket("localhost", Integer.parseInt(ClientProperties.INSTANCE.getProperty("port")));
+            sendFile(fileToSend);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        sendFile(fileToSend);
+
     }
 
     private void sendFile(File fileToSend) {
-        long length = fileToSend.length();
-        byte[] bytes = new byte[16 * 1024];
-        InputStream in = null;
+        DataOutputStream dos = null;
         try {
-            in = new FileInputStream(fileToSend);
-            OutputStream out = socket.getOutputStream();
-            int count;
-            while ((count = in.read(bytes)) > 0) {
-                out.write(bytes, 0, count);
+            dos = new DataOutputStream(socket.getOutputStream());
+            FileInputStream fis = new FileInputStream(fileToSend);
+            byte[] buffer = new byte[4096];
+            while (fis.read(buffer) > 0) {
+                dos.write(buffer);
             }
-            out.close();
-            in.close();
-            socket.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            fis.close();
+            dos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
