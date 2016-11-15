@@ -25,15 +25,15 @@ public class ClientFrame extends JFrame {
         ImageIcon downloadIcon = new ImageIcon("Client/Icons/download.png");
         ImageIcon uploadIcon = new ImageIcon("Client/Icons/upload.png");
 
-        JButton OFileButton = new JButton(downloadIcon);
-        OFileButton.addActionListener(new ActionListener() {
+        JButton openFileButton = new JButton(uploadIcon);
+        openFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 OpenFileDialogOpen();
             }
         });
 
-        JButton RestoreButton = new JButton(uploadIcon);
-        RestoreButton.addActionListener(new ActionListener() {
+        JButton restoreButton = new JButton(downloadIcon);
+        restoreButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RestoreFileOpen();
             }
@@ -46,20 +46,20 @@ public class ClientFrame extends JFrame {
             }
         });
 
-        toolbar.add(OFileButton);
-        toolbar.add(RestoreButton);
+        toolbar.add(openFileButton);
+        toolbar.add(restoreButton);
         toolbar.add(exitButton);
         add(toolbar, BorderLayout.NORTH);
     }
 
 
     private void OpenFileDialogOpen() {
-        OpenFIleFrame OFile = new OpenFIleFrame();
-        OFile.setVisible(true);
+        OpenFIleFrame openFIlePlease = new OpenFIleFrame();
+        openFIlePlease.setVisible(true);
     }
     private void RestoreFileOpen() {
-        RestoreFile RFile = new RestoreFile();
-        RFile.setVisible(true);
+        RestoreFile restoreFile = new RestoreFile();
+        restoreFile.setVisible(true);
     }
 
     private void closeFrame(){
