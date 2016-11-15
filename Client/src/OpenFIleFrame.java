@@ -17,7 +17,7 @@ public class OpenFIleFrame extends JFrame {
     private File fileToBuckup;
 
     public OpenFIleFrame() {
-
+        panel = new JPanel();
         loadFile();
     }
 
@@ -62,8 +62,10 @@ public class OpenFIleFrame extends JFrame {
         int ret = fdia.showDialog(panel, "Open file");
 
         if (ret == JFileChooser.APPROVE_OPTION) {
-             fileToBuckup = fdia.getSelectedFile();
+            fileToBuckup = fdia.getSelectedFile();
             initUI(fileToBuckup);
+            Connection connection = new Connection(fileToBuckup);
+
         }
 
     }

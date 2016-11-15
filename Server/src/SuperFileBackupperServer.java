@@ -1,5 +1,52 @@
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class SuperFileBackupperServer {
-    public static void main(String[] args) {
-        System.out.println(ServerProperties.INSTANCE.getProperty("port"));
+    public static void main(String args[]) {
+        ServerSocket serverSocket = null;
+
+        try {
+            serverSocket = new ServerSocket(4444);
+        } catch (IOException ex) {
+            System.out.println("Can't setup server on this port number. ");
+        }
+
+        Socket socket = null;
+        InputStream in = null;
+        OutputStream out = null;
+
+        try {
+            socket = serverSocket.accept();
+        } catch (IOException ex) {
+            System.out.println("Can't accept client connection. ");
+        }
+
+        try {
+            in = socket.getInputStream();
+        } catch (IOException ex) {
+            System.out.println("Can't get socket input stream. ");
+        }
+
+        try {
+            out = new FileOutputStream("M:\\test2.xml");
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not found. ");
+        }
+
+        byte[] bytes = new byte[16*1024];
+
+        int count;
+        try {
+            while ((count = in.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+            }
+            out.close();
+            in.close();
+            socket.close();
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
