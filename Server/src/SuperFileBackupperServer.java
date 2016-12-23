@@ -1,10 +1,8 @@
-import java.io.DataInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SuperFileBackupperServer extends  Thread{
+public class SuperFileBackupperServer extends Thread {
     private ServerSocket ss;
 
     public SuperFileBackupperServer(int port) {
@@ -16,28 +14,62 @@ public class SuperFileBackupperServer extends  Thread{
     }
 
     public void run() {
+        System.out.println("server running");
+
         while (true) {
+            Socket clientSock = null;
             try {
-                Socket clientSock = ss.accept();
-                saveFile(clientSock);
+                clientSock = ss.accept();
+                receiveFile(clientSock);
+                sendMessage("przyjąłem plik", clientSock);
+            } catch (IOException e) {
+                sendMessage("nie udało się przyjąć pliku", clientSock);
+
+            }
+        }
+    }
+
+    private void sendMessage(String msg, Socket clientSock) {
+        DataOutputStream dos = null;
+        try {
+            dos = new DataOutputStream(clientSock.getOutputStream());
+            dos.writeBytes(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                dos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void saveFile(Socket clientSock) throws IOException {
-        DataInputStream dis = new DataInputStream(clientSock.getInputStream());
-        FileOutputStream fos = new FileOutputStream("testfile");
-        byte[] buffer = new byte[4096];
+    private void receiveFile(Socket clientSock) {
+        DataInputStream dis = null;
+        FileOutputStream fos = null;
+        try {
+            dis = new DataInputStream(clientSock.getInputStream());
+            fos = new FileOutputStream("testfile");
+            byte[] buffer = new byte[4096];
 
-        int bytesRead = 0;
-        while((bytesRead = dis.read(buffer)) > 0) {
-            fos.write(buffer, 0, bytesRead);
+            int bytesRead = 0;
+            while ((bytesRead = dis.read(buffer)) > 0) {
+                fos.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            sendMessage("nie ok", clientSock);
+            e.printStackTrace();
         }
 
-        fos.close();
-        dis.close();
+
+        try {
+            fos.close();
+            dis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) {
