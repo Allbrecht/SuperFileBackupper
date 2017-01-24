@@ -30,45 +30,60 @@ public class SuperFileBackupperServer extends Thread {
     }
 
     private void sendMessage(String msg, Socket clientSock) {
+        System.out.println("Sending message..");
+
         DataOutputStream dos = null;
         try {
             dos = new DataOutputStream(clientSock.getOutputStream());
             dos.writeBytes(msg);
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }/* finally {
             try {
                 dos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
+        System.out.println("message sent");
+
     }
 
     private void receiveFile(Socket clientSock) {
+        System.out.println("Receiveing message..");
+
         DataInputStream dis = null;
         FileOutputStream fos = null;
         try {
             dis = new DataInputStream(clientSock.getInputStream());
-            fos = new FileOutputStream("testfile");
+
+            long size = dis.readLong();
+
+            fos = new FileOutputStream("testfile\n");
             byte[] buffer = new byte[4096];
 
-            int bytesRead = 0;
-            while ((bytesRead = dis.read(buffer)) > 0) {
-                fos.write(buffer, 0, bytesRead);
+            long bytesRead = 0;
+            int chunkBuffer;
+            while (bytesRead < size) {
+                chunkBuffer = dis.read(buffer);
+                fos.write(buffer, 0, chunkBuffer);
+                bytesRead += chunkBuffer;
             }
+
+            System.out.println("koniec zapisu pliku");
         } catch (IOException e) {
             sendMessage("nie ok", clientSock);
             e.printStackTrace();
         }
 
+        System.out.println("message received");
 
-        try {
+       /* try {
             fos.close();
             dis.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 
