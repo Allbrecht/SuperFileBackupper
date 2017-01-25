@@ -7,39 +7,52 @@ public class Connection {
     public Connection(File fileToSend) {
         try {
             socket = new Socket("localhost", Integer.parseInt(ClientProperties.INSTANCE.getProperty("port")));
-            sendFile(fileToSend);
-            receiveMsg();
+            sendHash(fileToSend);
+            if (receiveHashResponse()) {
+                sendFile(fileToSend);
+                receiveMsg();
+            } else {
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean receiveHashResponse() {
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            int response = in.read();
+            return response == 1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private void sendHash(File fileToSend) {
+        int hash = fileToSend.hashCode();
+        DataOutputStream dos = null;
+        try {
+            dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeInt(hash);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void receiveMsg() {
-        System.out.println("receive file");
+
         try {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
-            String msg = in.readLine();
-            System.out.println(msg);
+            int msg = in.read();
+            System.out.println("is file saved? = " + msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /* private void sendFileName(String fileName) {
-         DataOutputStream dos = null;
-         try {
-             dos = new DataOutputStream(socket.getOutputStream());
-             byte[] stringByte = fileName.getBytes();
-             dos.write(stringByte);
-             dos.close();
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-     }*/
-    private void send(byte[] array) {
-
     }
 
     private void sendFile(File fileToSend) {
@@ -61,15 +74,7 @@ public class Connection {
         } catch (IOException e) {
             e.printStackTrace();
         }
-       /* finally {
-            try {
-                //fis.close();
-                //dos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-        }*/
     }
 }
 
