@@ -9,12 +9,24 @@ public class Connection {
             socket = new Socket("localhost", Integer.parseInt(ClientProperties.INSTANCE.getProperty("port")));
             sendHash(fileToSend);
             if (receiveHashResponse()) {
+                sendName(fileToSend);
                 sendFile(fileToSend);
                 receiveMsg();
             } else {
 
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    private void sendName(File fileToSend) {
+        OutputStream out = null;
+        try {
+            out = socket.getOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(out);
+            oout.writeObject(fileToSend.getName());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,7 +68,6 @@ public class Connection {
     }
 
     private void sendFile(File fileToSend) {
-
         DataOutputStream dos = null;
         FileInputStream fis = null;
         try {

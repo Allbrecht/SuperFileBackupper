@@ -1,6 +1,13 @@
+
+
+
+import sun.misc.IOUtils;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+
 
 /**
  * 1- ok
@@ -9,9 +16,9 @@ import java.net.Socket;
  */
 public class SuperFileBackupperServer extends Thread {
     private ServerSocket ss;
-    private int[] hashes;
     private HashManager hashManager;
     private static final String path = "Server/buckedFiles";
+    private String name;
 
     public SuperFileBackupperServer(int port) {
         try {
@@ -30,6 +37,7 @@ public class SuperFileBackupperServer extends Thread {
             try {
                 clientSock = ss.accept();
                 receiveHash(clientSock);
+                receiveName(clientSock);
                 receiveFile(clientSock);
                 sendMessage(1, clientSock);
             } catch (IOException e) {
@@ -37,6 +45,28 @@ public class SuperFileBackupperServer extends Thread {
 
             }
         }
+    }
+
+    private void receiveName(Socket clientSock) {
+
+       /* try {
+            //BufferedInputStream is = new BufferedInputStream(clientSock.getInputStream());
+            byte [] bytes = IOUtils.readFully(clientSock.getInputStream(),8,true);
+            name =  new String(bytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+        ObjectInputStream oin = null;
+        try {
+            oin = new ObjectInputStream(clientSock.getInputStream());
+            name = (String) oin.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void receiveHash(Socket clientSock) {
@@ -68,10 +98,9 @@ public class SuperFileBackupperServer extends Thread {
         FileOutputStream fos = null;
         try {
             dis = new DataInputStream(clientSock.getInputStream());
-
+            fos = new FileOutputStream(path+"/"+name);
             long size = dis.readLong();
 
-            fos = new FileOutputStream(path);
             byte[] buffer = new byte[4096];
 
             long bytesRead = 0;
@@ -81,6 +110,7 @@ public class SuperFileBackupperServer extends Thread {
                 fos.write(buffer, 0, chunkBuffer);
                 bytesRead += chunkBuffer;
             }
+
             hashManager.addHash(fos.hashCode());
             hashManager.saveHashes();
             System.out.println("koniec zapisu pliku");
