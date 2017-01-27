@@ -55,11 +55,13 @@ public class ClientFrame extends JFrame {
 
     private void OpenFileDialogOpen() {
         OpenFIleFrame openFIlePlease = new OpenFIleFrame();
+        openFIlePlease.loadFile();
         openFIlePlease.setVisible(true);
+
     }
     private void RestoreFileOpen() {
-        RestoreFile restoreFile = new RestoreFile();
-        restoreFile.setVisible(true);
+        RestoreFileFrame restoreFileFrame = new RestoreFileFrame();
+        restoreFileFrame.setVisible(true);
     }
 
     private void closeFrame(){

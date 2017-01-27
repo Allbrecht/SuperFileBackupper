@@ -1,12 +1,13 @@
 import java.io.*;
 import java.net.Socket;
 
-public class Connection {
+public class FileSaver {
     private Socket socket;
 
-    public Connection(File fileToSend) {
+    public FileSaver(File fileToSend) {
         try {
             socket = new Socket("localhost", Integer.parseInt(ClientProperties.INSTANCE.getProperty("port")));
+            sendGetCommand();
             sendHash(fileToSend);
             if (receiveHashResponse()) {
                 sendName(fileToSend);
@@ -20,7 +21,15 @@ public class Connection {
         }
 
     }
-
+    private void sendGetCommand() {
+        ObjectOutputStream oin = null;
+        try {
+            oin = new ObjectOutputStream(socket.getOutputStream());
+            oin.writeObject("Save");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void sendName(File fileToSend) {
         OutputStream out = null;
         try {
@@ -32,7 +41,6 @@ public class Connection {
         }
 
     }
-
     private boolean receiveHashResponse() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -56,12 +64,12 @@ public class Connection {
     }
 
     private void receiveMsg() {
-
         try {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
             int msg = in.read();
             System.out.println("is file saved? = " + msg);
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

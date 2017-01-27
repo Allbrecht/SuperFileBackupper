@@ -1,13 +1,8 @@
 
 
-
-import sun.misc.IOUtils;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-
 
 /**
  * 1- ok
@@ -36,10 +31,18 @@ public class SuperFileBackupperServer extends Thread {
             Socket clientSock = null;
             try {
                 clientSock = ss.accept();
-                receiveHash(clientSock);
-                receiveName(clientSock);
-                receiveFile(clientSock);
-                sendMessage(1, clientSock);
+                switch (receiveTask(clientSock)) {
+                    case "Save":
+                        receiveHash(clientSock);
+                        receiveName(clientSock);
+                        receiveFile(clientSock);
+                        sendMessage(1, clientSock);
+                        break;
+                    case "Restore":
+                        sendFileListAsString(clientSock);
+                        receiveName(clientSock);
+                        sendFile(clientSock);
+                }
             } catch (IOException e) {
                 sendMessage(-1, clientSock);
 
@@ -47,15 +50,51 @@ public class SuperFileBackupperServer extends Thread {
         }
     }
 
-    private void receiveName(Socket clientSock) {
-
-       /* try {
-            //BufferedInputStream is = new BufferedInputStream(clientSock.getInputStream());
-            byte [] bytes = IOUtils.readFully(clientSock.getInputStream(),8,true);
-            name =  new String(bytes, StandardCharsets.UTF_8);
+    private void sendFileListAsString(Socket clientSock) {
+        OutputStream out = null;
+        try {
+            out = clientSock.getOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(out);
+            oout.writeObject(FileManager.getFilesAsList());
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
+    }
+
+    private void sendFile(Socket clientSock) {
+        DataOutputStream dos = null;
+        FileInputStream fis = null;
+        try {
+            dos = new DataOutputStream(clientSock.getOutputStream());
+            File fileToSend = FileManager.getFile(name);
+            long size = fileToSend.length();
+            dos.writeLong(size);
+
+            fis = new FileInputStream(fileToSend);
+            byte[] buffer = new byte[4096];
+            while (fis.read(buffer) > 0) {
+                dos.write(buffer);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        name = null;
+    }
+
+    private String receiveTask(Socket clientSock) {
+        ObjectInputStream oin = null;
+        try {
+            oin = new ObjectInputStream(clientSock.getInputStream());
+            return (String) oin.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void receiveName(Socket clientSock) {
         ObjectInputStream oin = null;
         try {
             oin = new ObjectInputStream(clientSock.getInputStream());
@@ -65,7 +104,6 @@ public class SuperFileBackupperServer extends Thread {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
 
     }
 
@@ -98,7 +136,7 @@ public class SuperFileBackupperServer extends Thread {
         FileOutputStream fos = null;
         try {
             dis = new DataInputStream(clientSock.getInputStream());
-            fos = new FileOutputStream(path+"/"+name);
+            fos = new FileOutputStream(path + "/" + name);
             long size = dis.readLong();
 
             byte[] buffer = new byte[4096];
